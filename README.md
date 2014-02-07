@@ -8,7 +8,8 @@ representation, and implements basic JS-object (de)serialization.
 
 ## Example
 
-Behavior is identical to the example in drfloob/_tree
+This is the same example found in [drfloob/_tree][drf_tree]'s
+README.md, using `Chinchilla` syntax.
 
 ```javascript
 var patronage, familyTree, charlie, chuckFamilyTree, printLineage;
