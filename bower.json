@@ -1,0 +1,25 @@
+{
+    "name": "chinchilla",
+    "version": "0.0.1",
+    "authors": [
+        "aj heller <aj@drfloob.com>"
+    ],
+    "description": "an immutable key/value tree for javascript",
+    "main": "src/chinchilla.js",
+    "keywords": [
+        "tree", "data structure"
+    ],
+    "license": "MIT",
+    "homepage": "http://github.com/drfloob/chinchilla",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "_tree": "drfloob/_tree",
+        "underscore": ""
+    }
+}
