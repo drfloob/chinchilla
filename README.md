@@ -1,13 +1,9 @@
 An immutable "hash tree", or hierarchical dictionary. Generally
-useful, intended to integrate with [facebook/react][react] (TBD).
-
-See [drfloob/_tree][drf_tree] for implementation details and full API. 
-
+useful, intended to integrate with [facebook/react][react] (TBD).  See
+[drfloob/_tree][drf_tree] for implementation details and full API.
 Chinchilla augments `_tree` with some sugar, making it act more like a
-hash tree.
-
-Chinchilla also standardizes on a serial object representation, and
-implements basic JS-object (de)serialization.
+hash tree.  Chinchilla also standardizes on a serial object
+representation, and implements basic JS-object (de)serialization.
 
 
 ## Example
