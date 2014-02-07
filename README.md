@@ -60,7 +60,7 @@ expect(chuckFamilyTree.serialize()).toEqual([{'name': 'Jake'}, [
 
 
 
-## Why "Chinchilla"
+## Why "Chinchilla"?
 
 Named after the unique "Chinchilla Red" petrified wood, native to
 Australia. What could be a better name for an immutable tree?
