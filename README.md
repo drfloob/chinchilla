@@ -14,7 +14,7 @@ implements basic JS-object (de)serialization.
 
 Behavior is identical to the example in drfloob/_tree
 
-```
+```javascript
 var patronage, familyTree, charlie, chuckFamilyTree, printLineage;
 
 patronage = [{'name': 'Jake'}, [
@@ -22,7 +22,7 @@ patronage = [{'name': 'Jake'}, [
     {'name': 'T.V.'},
     {'name': 'Charlie'},
     {'name': 'Viola'}
-]};
+]];
 familyTree = chinchilla.load(patronage);
 
 // add a child, and save the new tree.
@@ -47,6 +47,15 @@ chuckFamilyTree.walk(printLineage);
 
 // ... and *not* in the old tree
 familyTree.walk(printLineage);
+
+
+// serialization, jasmine test notation
+expect(chuckFamilyTree.serialize()).toEqual([{'name': 'Jake'}, [
+    {'name': 'Jake Jr.'},
+    {'name': 'T.V.'},
+    {'name': 'Chuck'},
+    {'name': 'Viola'}
+]]);
 ```
 
 
