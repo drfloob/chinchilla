@@ -50,7 +50,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.  
 */</span>
 
-<span class="hljs-comment">/* global define */</span></pre></div></div>
+<span class="hljs-comment">/* global define, module, require */</span></pre></div></div>
             
         </li>
         
@@ -69,57 +69,12 @@ setup for AMD, Node.js, and Global usages.</p>
             <div class="content"><div class='highlight'><pre>(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(root, factory)</span> {</span>
 <span class="hljs-pi">    'use strict'</span>;
 
-    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-3">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
-              <p>AMD. Register as an anonymous module.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        define([<span class="hljs-string">'underscore'</span>, <span class="hljs-string">'_tree'</span>], factory);
-    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> exports === <span class="hljs-string">'object'</span>) {</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-4">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-4">&#182;</a>
-              </div>
-              <p>Node. Does not work with strict CommonJS, but
-only CommonJS-like enviroments that support module.exports,
-like Node.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-comment">/* global module, require */</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> define === <span class="hljs-string">'function'</span> &amp;&amp; define.amd) {
+        define([<span class="hljs-string">'underscore'</span>, <span class="hljs-string">'_tree'</span>], factory);
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> exports === <span class="hljs-string">'object'</span>) {
         module.exports = factory(<span class="hljs-built_in">require</span>(<span class="hljs-string">'underscore'</span>), <span class="hljs-built_in">require</span>(<span class="hljs-string">'_tree'</span>));
-    } <span class="hljs-keyword">else</span> {</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-5">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
-              </div>
-              <p>Browser globals (root is window)</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        root.chinchilla = factory(root._, root._tree);
+    } <span class="hljs-keyword">else</span> {
+        root.chinchilla = factory(root._, root._tree);
     }
 }(<span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(_, _tree)</span> {</span>
 <span class="hljs-pi">    'use strict'</span>;
@@ -131,7 +86,7 @@ like Node.</p>
             <span class="hljs-keyword">var</span> defaults = {
                 mixins: mixins
             };
-            <span class="hljs-keyword">return</span> _tree.create(defaults);
+            <span class="hljs-keyword">return</span> _tree.inflate([<span class="hljs-string">'🐭'</span>], _tree.inflate.byAdjacencyList, defaults);
         },
         load: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data)</span> {</span>
             <span class="hljs-keyword">var</span> defaults = {
@@ -146,11 +101,11 @@ like Node.</p>
         </li>
         
         
-        <li id="section-6">
+        <li id="section-3">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <p>All tree mixins are shortcuts to tree.root() methods. For
 example, <code>tree.get(&#39;jake&#39;)</code> is equivalent to
@@ -162,14 +117,17 @@ example, <code>tree.get(&#39;jake&#39;)</code> is equivalent to
             <span class="hljs-string">'get'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(attribute, value)</span> {</span>
                 <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.root().get(attribute, value);
             },
+            <span class="hljs-string">'data'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> {</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.root().data(value);
+            },
             <span class="hljs-string">'update'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> {</span>
                 <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.root().update(value);
             },
-            <span class="hljs-string">'set'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> {</span>
-                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.root().set(value);
-            },
             <span class="hljs-string">'serialize'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
                 <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.root().serialize();
+            },
+            <span class="hljs-string">'add'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(children)</span> {</span>
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.root().add(children);
             }
         },
         <span class="hljs-string">'node'</span>: {</pre></div></div>
@@ -177,11 +135,11 @@ example, <code>tree.get(&#39;jake&#39;)</code> is equivalent to
         </li>
         
         
-        <li id="section-7">
+        <li id="section-4">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
               <p><code>get</code> retrieves the first child node whose <code>attribute</code>
 matches the given <code>value</code>, or <code>undefined</code>. It only
@@ -197,18 +155,18 @@ attribute defaults to ‘name’.</p>
                     attribute = <span class="hljs-string">'name'</span>;
                 }
                 <span class="hljs-keyword">return</span> _.find(<span class="hljs-keyword">this</span>.children(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span> {</span>
-                    <span class="hljs-keyword">return</span> c[attribute] === value;
+                    <span class="hljs-keyword">return</span> c.data()[attribute] === value;
                 });
             },</pre></div></div>
             
         </li>
         
         
-        <li id="section-8">
+        <li id="section-5">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p><code>update</code> performs a partial update on the node’s
 data. For example, if the current data is</p>
@@ -227,34 +185,11 @@ data. For example, if the current data is</p>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
-              </div>
-              <p><code>set</code> performs a full update on the node’s data. For
-example, if the current data is</p>
-<p><code>{name: &#39;jake&#39;, food: &#39;sandwich&#39;, friend: &#39;finn&#39;}</code></p>
-<p>and you call:</p>
-<p><code>set({food: &#39;honey&#39;})</code></p>
-<p>the node will end up with the following data:</p>
-<p><code>{food: &#39;honey&#39;}</code></p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>            <span class="hljs-string">'set'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> {</span>
-                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.data(value);
-            },</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-10">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p><code>serialize</code> shrinks the data down into a small,
 storable representation that can be reloaded with
@@ -265,9 +200,39 @@ storable representation that can be reloaded with
             <div class="content"><div class='highlight'><pre>            <span class="hljs-string">'serialize'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">serialize</span> <span class="hljs-params">()</span> {</span>
                 <span class="hljs-keyword">var</span> ret = [<span class="hljs-keyword">this</span>.data()];
                 <span class="hljs-keyword">if</span> (!_.isEmpty(<span class="hljs-keyword">this</span>.children())) {
-                    ret.push(_.flatten(_.map(<span class="hljs-keyword">this</span>.children(), serialize), <span class="hljs-literal">true</span>));
+                    ret.push(_.flatten(_.map(<span class="hljs-keyword">this</span>.children(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(k)</span> {</span>
+                        <span class="hljs-keyword">return</span> serialize.call(k);
+                    }), <span class="hljs-literal">true</span>));
                 }
                 <span class="hljs-keyword">return</span> ret;
+            },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>parses and adds a single child to the given node, by
+passing the child object through <code>chinchilla.load</code>
+(essentially).</p>
+<p><code>child</code> can be:</p>
+<ul>
+<li>a single new child’s data, such as <code>{name: &#39;bort&#39;}</code></li>
+<li>a serialized node (possibly with children) to be
+loaded as a child node, such as:
+<code>[&lt;node def&gt;[, &lt;child def&gt; [...]] [, &lt;node def&gt;]]</code></li>
+</ul>
+<p>see tests for examples.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            <span class="hljs-string">'add'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(child)</span> {</span>
+                child = _.isArray(child) ? child : [child];
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.parseAndAddChild(child);
             }
         }
     };

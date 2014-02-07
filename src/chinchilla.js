@@ -18,7 +18,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.  
 */
 
-/* global define */
+/* global define, module, require */
 
 // [UMD/returnExports.js](https://github.com/umdjs/umd/blob/master/returnExports.js)
 // setup for AMD, Node.js, and Global usages.
@@ -26,16 +26,10 @@ THE SOFTWARE.
     'use strict';
 
     if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
         define(['underscore', '_tree'], factory);
     } else if (typeof exports === 'object') {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like enviroments that support module.exports,
-        // like Node.
-        /* global module, require */
         module.exports = factory(require('underscore'), require('_tree'));
     } else {
-        // Browser globals (root is window)
         root.chinchilla = factory(root._, root._tree);
     }
 }(this, function (_, _tree) {
@@ -48,7 +42,7 @@ THE SOFTWARE.
             var defaults = {
                 mixins: mixins
             };
-            return _tree.create(defaults);
+            return _tree.inflate(['🐭'], _tree.inflate.byAdjacencyList, defaults);
         },
         load: function(data) {
             var defaults = {
@@ -66,14 +60,17 @@ THE SOFTWARE.
             'get': function(attribute, value) {
                 return this.root().get(attribute, value);
             },
+            'data': function(value) {
+                return this.root().data(value);
+            },
             'update': function(value) {
                 return this.root().update(value);
             },
-            'set': function(value) {
-                return this.root().set(value);
-            },
             'serialize': function() {
                 return this.root().serialize();
+            },
+            'add': function(children) {
+                return this.root().add(children);
             }
         },
         'node': {
@@ -89,7 +86,7 @@ THE SOFTWARE.
                     attribute = 'name';
                 }
                 return _.find(this.children(), function(c) {
-                    return c[attribute] === value;
+                    return c.data()[attribute] === value;
                 });
             },
 
@@ -109,31 +106,33 @@ THE SOFTWARE.
                 return this.data(_.extend(_.extend({}, this.data()), value));
             },
 
-            // `set` performs a full update on the node's data. For
-            // example, if the current data is
-            // 
-            // `{name: 'jake', food: 'sandwich', friend: 'finn'}`
-            // 
-            // and you call:
-            // 
-            // `set({food: 'honey'})`
-            //
-            // the node will end up with the following data:
-            //
-            // `{food: 'honey'}`
-            'set': function(value) {
-                return this.data(value);
-            },
-
             // `serialize` shrinks the data down into a small,
             // storable representation that can be reloaded with
             // `chinchilla.load`.
             'serialize': function serialize () {
                 var ret = [this.data()];
                 if (!_.isEmpty(this.children())) {
-                    ret.push(_.flatten(_.map(this.children(), serialize), true));
+                    ret.push(_.flatten(_.map(this.children(), function(k) {
+                        return serialize.call(k);
+                    }), true));
                 }
                 return ret;
+            },
+
+            // parses and adds a single child to the given node, by
+            // passing the child object through `chinchilla.load`
+            // (essentially).
+            //
+            // `child` can be:
+            //   * a single new child's data, such as `{name: 'bort'}`
+            //   * a serialized node (possibly with children) to be
+            //     loaded as a child node, such as:
+            //     `[<node def>[, <child def> [...]] [, <node def>]]`
+            //
+            // see tests for examples.
+            'add': function (child) {
+                child = _.isArray(child) ? child : [child];
+                return this.parseAndAddChild(child);
             }
         }
     };

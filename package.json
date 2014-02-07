@@ -1,19 +1,19 @@
 {
     "name": "chinchilla",
-    "version": "0.0.1",
-    "description": "",
+    "version": "0.0.2",
+    "description": "An immutable \"hash tree\", or hierarchical dictionary. Generally useful, intended to integrate with facebook/react",
     "main": "src/chinchilla.js",
     "scripts": {
-        "test": "npm test"
+        "test": "grunt test"
     },
     "repository": {
         "type": "git",
         "url": "http://github.com/drfloob/chinchilla"
     },
     "keywords": [
-        "tree"
+        "tree", "immutable", "data structure", "tree model", "dictionary", "hierarchical"
     ],
-    "author": "aj heller <aj@drfloob.com>",
+    "author": "A.J. Heller <aj@drfloob.com>",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/drfloob/chinchilla/issues"
@@ -35,5 +35,9 @@
         "grunt-template-jasmine-istanbul": "~0.2.5",
         "grunt-contrib-copy": "~0.4.1",
         "grunt-jasmine-node": "~0.1.0"
+    },
+    "dependencies": {
+        "underscore": "",
+        "under_tree": ""
     }
 }

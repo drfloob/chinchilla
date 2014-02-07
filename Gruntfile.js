@@ -75,7 +75,7 @@ module.exports = function(grunt) {
                             requireConfig: {
                                 baseUrl: '.grunt/grunt-contrib-jasmine/src/',
                                 paths: { 'underscore': '../../../test/vendor/underscore-min',
-                                         '_tree': '../../../bower_components/_tree/dist/_tree.min'},
+                                         '_tree': '../../../node_modules/_tree/dist/_tree.min'},
                                 shim: { 'underscore': { exports: '_' } }
                             }
                         }
@@ -85,7 +85,8 @@ module.exports = function(grunt) {
         },
         jasmine_node: {
             projectRoot: '.',
-            specNameMatcher: './test/spec/'
+            specFolders: ['test/spec'],
+            forceExit: true
         },
         docco: {
             main: {
@@ -107,7 +108,7 @@ module.exports = function(grunt) {
                     {src: 'node_modules/grunt-contrib-jasmine/vendor/jasmine-1.3.1/jasmine.js', dest: 'test/vendor/jasmine.js'},
                     {src: 'node_modules/grunt-contrib-jasmine/vendor/jasmine-1.3.1/jasmine-html.js', dest: 'test/vendor/jasmine-html.js'},
                     {src: 'node_modules/jasmine-reporters/src/jasmine.tap_reporter.js', dest: 'test/vendor/jasmine.tap_reporter.js'},
-                    {src: 'bower_components/underscore/underscore-min.js', dest: 'test/vendor/underscore-min.js'}
+                    {src: 'node_modules/underscore/underscore-min.js', dest: 'test/vendor/underscore-min.js'}
                 ]
             }
         }
