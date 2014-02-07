@@ -107,7 +107,7 @@ setup for AMD, Node.js, and Global usages.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>All tree mixins are shortcuts to tree.root() methods. For
+              <p>All tree mixins are shortcuts to <code>tree.root()</code> methods. For
 example, <code>tree.get(&#39;jake&#39;)</code> is equivalent to
 <code>tree.root().get(&#39;jake&#39;)</code>.</p>
 
@@ -224,7 +224,7 @@ passing the child object through <code>chinchilla.load</code>
 <li>a single new child’s data, such as <code>{name: &#39;bort&#39;}</code></li>
 <li>a serialized node (possibly with children) to be
 loaded as a child node, such as:
-<code>[&lt;node def&gt;[, &lt;child def&gt; [...]] [, &lt;node def&gt;]]</code></li>
+<code>[{name: &#39;jake&#39;}, [{name: &#39;Jake Jr.&#39;}]]</code></li>
 </ul>
 <p>see tests for examples.</p>
 

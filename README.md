@@ -45,7 +45,6 @@ chuckFamilyTree.walk(printLineage);
 // ... and *not* in the old tree
 familyTree.walk(printLineage);
 
-
 // serialization, jasmine test notation
 expect(chuckFamilyTree.serialize()).toEqual([{'name': 'Jake'}, [
     {'name': 'Jake Jr.'},

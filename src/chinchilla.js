@@ -53,7 +53,7 @@ THE SOFTWARE.
     };
 
     mixins = {
-        // All tree mixins are shortcuts to tree.root() methods. For
+        // All tree mixins are shortcuts to `tree.root()` methods. For
         // example, `tree.get('jake')` is equivalent to
         // `tree.root().get('jake')`.
         'tree': {
@@ -127,7 +127,7 @@ THE SOFTWARE.
             //   * a single new child's data, such as `{name: 'bort'}`
             //   * a serialized node (possibly with children) to be
             //     loaded as a child node, such as:
-            //     `[<node def>[, <child def> [...]] [, <node def>]]`
+            //     `[{name: 'jake'}, [{name: 'Jake Jr.'}]]`
             //
             // see tests for examples.
             'add': function (child) {
