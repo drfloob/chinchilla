@@ -35,18 +35,20 @@ THE SOFTWARE.
 }(this, function (_, _tree) {
     'use strict';
 
-    var Chinchilla, mixins;
+    var Chinchilla, mixins, callbacks;
 
     Chinchilla = {
         new: function() {
             var defaults = {
-                mixins: mixins
+                mixins: mixins,
+                callbacks: callbacks
             };
             return _tree.inflate(['🐭'], _tree.inflate.byAdjacencyList, defaults);
         },
         load: function(data) {
             var defaults = {
-                mixins: mixins
+                mixins: mixins,
+                callbacks: callbacks
             };
             return _tree.inflate(data, _tree.inflate.byAdjacencyList, defaults);
         }
@@ -135,6 +137,48 @@ THE SOFTWARE.
                 return this.parseAndAddChild(child);
             }
         }
+    };
+
+    //--------------------------------------------------------------------------------
+    // Subtree Modification Logic
+    //
+    // These callbacks maintain a `modified` flag on every node, on
+    // every tree update. This provides an O(1) check to see if any
+    // node subtree has been modified, at the cost of ~O(tree depth)
+    // on every modification.
+    //
+    // For the React usecase, the net effect is probably beneficial
+    // (compared to the naive on-demand O(n) subtree check).
+
+    function markParentsAsModified(tree, node) {
+        node.modified = true;
+        if (node.parent()) {
+            markParentsAsModified(tree, node.parent());
+        } else {
+            tree.modified = true;
+        }
+        return node;
+    }
+
+    function markChildrenAsModified(tree, node) {
+        node.modified = true;
+        _.each(node.children(), function(c){ markChildrenAsModified(tree, c); });
+        return node;
+    }
+
+    function clearModified(tree) {
+        tree.modified = false;
+        tree.walk(function(node) {
+            node.modified = false;
+        });
+    }
+
+    callbacks = {
+        'beforeFreeze': [clearModified],
+        'beforeFreeze.data': [markParentsAsModified],
+        'beforeFreeze.parseAndAddChild': [markChildrenAsModified, markParentsAsModified],
+        'beforeFreeze.addChildNode': [markChildrenAsModified, markParentsAsModified],
+        'beforeFreeze.remove': [markParentsAsModified]
     };
 
 

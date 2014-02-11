@@ -1,6 +1,6 @@
 {
     "name": "chinchilla",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "An immutable \"hash tree\", or hierarchical dictionary. Generally useful, intended to integrate with facebook/react",
     "main": "src/chinchilla.js",
     "scripts": {
@@ -38,6 +38,6 @@
     },
     "dependencies": {
         "underscore": "",
-        "under_tree": ""
+        "_tree": "drfloob/_tree"
     }
 }

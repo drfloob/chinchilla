@@ -299,4 +299,121 @@
 
     });
 
+    describe('subtree modified', function () {
+        var data;
+        beforeEach(function() {
+            data = chinchilla.load(['🐭', [1,2,3,[4,5,[6,7,8,9]],10,11,[12,13,14,[15,[16,17,18,[19,20,21]],22],23,'bort'],25]]);
+        });
+        
+        describe('.data', function() {
+            var node;
+            beforeEach(function () {
+                node = data.findNodeByData(20);
+                data = node.data('changed');
+            });
+            it('flags all parent nodes', function () {
+                node = data.findNode(node);
+                expect(node.modified).toBe(true);
+
+                _.each([18,15,14,11,'🐭'], function(val) {
+                    node = data.findNodeByData(val);
+                    expect(node.modified).toBe(true);
+                });
+            });
+            it('does not flag any other node', function () {
+                _.each([1,2,3,4,5,6,7,8,9,10,  12,13,    16,17,  19,  21,22,23,'bort',25], function(val) {
+                    var node = data.findNodeByData(val);
+                    expect(node.modified).toBe(false);
+                });
+            });
+        });
+
+
+        describe('.parseAndAddChild', function() {
+            var node;
+            beforeEach(function() {
+                node = data.findNodeByData(20);
+                data = node.parseAndAddChild(['a', ['b', 'c']]);
+            });
+            it('flags all parent nodes', function () {
+                node = data.findNode(node);
+                expect(node.modified).toBe(true);
+
+                _.each([20,18,15,14,11,'🐭'], function(val) {
+                    node = data.findNodeByData(val);
+                    expect(node.modified).toBe(true);
+                });
+            });
+            it('flags all child nodes', function () {
+                _.each(['a', 'b', 'c'], function(val) {
+                    node = data.findNodeByData(val);
+                    expect(node.modified).toBe(true);
+                });
+            });
+            it('does not flag any other node', function () {
+                _.each([1,2,3,4,5,6,7,8,9,10,  12,13,    16,17,  19,  21,22,23,'bort',25], function(val) {
+                    var node = data.findNodeByData(val);
+                    expect(node.modified).toBe(false);
+                });
+            });
+        });
+
+
+        describe('.addChildNode', function() {
+            var node;
+            beforeEach(function() {
+                var data2 = chinchilla.load(['a', ['b', 'c']]);
+                node = data.findNodeByData(20);
+                data = node.addChildNode(data2.root());
+            });
+            it('flags all parent nodes', function () {
+                node = data.findNode(node);
+                expect(node.modified).toBe(true);
+
+                _.each([20,18,15,14,11,'🐭'], function(val) {
+                    node = data.findNodeByData(val);
+                    expect(node.modified).toBe(true);
+                });
+            });
+            it('flags all child nodes', function () {
+                _.each(['a', 'b', 'c'], function(val) {
+                    node = data.findNodeByData(val);
+                    expect(node.modified).toBe(true);
+                });
+            });
+            it('does not flag any other node', function () {
+                _.each([1,2,3,4,5,6,7,8,9,10,  12,13,    16,17,  19,  21,22,23,'bort',25], function(val) {
+                    var node = data.findNodeByData(val);
+                    expect(node.modified).toBe(false);
+                });
+            });
+        });
+
+
+        describe('.remove', function() {
+            var node;
+            beforeEach(function() {
+                node = data.findNodeByData(20);
+                data = node.remove();
+            });
+            it('flags all parent nodes', function () {
+                node = data.findNode(node);
+                expect(node).toBeFalsy();
+
+                _.each([18,15,14,11,'🐭'], function(val) {
+                    node = data.findNodeByData(val);
+                    expect(node.modified).toBe(true);
+                });
+            });
+            it('does not flag any other node', function () {
+                _.each([1,2,3,4,5,6,7,8,9,10,  12,13,    16,17,  19,  21,22,23,'bort',25], function(val) {
+                    var node = data.findNodeByData(val);
+                    expect(node.modified).toBe(false);
+                });
+            });
+        });
+
+
+    });
+
 }));

@@ -79,18 +79,20 @@ setup for AMD, Node.js, and Global usages.</p>
 }(<span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(_, _tree)</span> {</span>
 <span class="hljs-pi">    'use strict'</span>;
 
-    <span class="hljs-keyword">var</span> Chinchilla, mixins;
+    <span class="hljs-keyword">var</span> Chinchilla, mixins, callbacks;
 
     Chinchilla = {
         <span class="hljs-keyword">new</span>: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
             <span class="hljs-keyword">var</span> defaults = {
-                mixins: mixins
+                mixins: mixins,
+                callbacks: callbacks
             };
             <span class="hljs-keyword">return</span> _tree.inflate([<span class="hljs-string">'🐭'</span>], _tree.inflate.byAdjacencyList, defaults);
         },
         load: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data)</span> {</span>
             <span class="hljs-keyword">var</span> defaults = {
-                mixins: mixins
+                mixins: mixins,
+                callbacks: callbacks
             };
             <span class="hljs-keyword">return</span> _tree.inflate(data, _tree.inflate.byAdjacencyList, defaults);
         }
@@ -145,7 +147,7 @@ example, <code>tree.get(&#39;jake&#39;)</code> is equivalent to
 matches the given <code>value</code>, or <code>undefined</code>. It only
 looks at immediate children, not their descendants.</p>
 <p>It can also be called as just <code>get(name)</code>, where
-attribute defaults to ‘name’.</p>
+attribute defaults to &#39;name&#39;.</p>
 
             </div>
             
@@ -168,7 +170,7 @@ attribute defaults to ‘name’.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p><code>update</code> performs a partial update on the node’s
+              <p><code>update</code> performs a partial update on the node&#39;s
 data. For example, if the current data is</p>
 <p><code>{name: &#39;jake&#39;, food: &#39;sandwich&#39;, friend: &#39;finn&#39;}</code></p>
 <p>and you call:</p>
@@ -221,7 +223,7 @@ passing the child object through <code>chinchilla.load</code>
 (essentially).</p>
 <p><code>child</code> can be:</p>
 <ul>
-<li>a single new child’s data, such as <code>{name: &#39;bort&#39;}</code></li>
+<li>a single new child&#39;s data, such as <code>{name: &#39;bort&#39;}</code></li>
 <li>a serialized node (possibly with children) to be
 loaded as a child node, such as:
 <code>[{name: &#39;jake&#39;}, [{name: &#39;Jake Jr.&#39;}]]</code></li>
@@ -235,6 +237,69 @@ loaded as a child node, such as:
                 <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.parseAndAddChild(child);
             }
         }
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <hr>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Subtree Modification Logic</p>
+<p>These callbacks maintain a <code>modified</code> flag on every node, on
+every tree update. This provides an O(1) check to see if any
+node subtree has been modified, at the cost of ~O(tree depth)
+on every modification.</p>
+<p>For the React usecase, the net effect is probably beneficial
+(compared to the naive on-demand O(n) subtree check).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">markParentsAsModified</span><span class="hljs-params">(tree, node)</span> {</span>
+        node.modified = <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">if</span> (node.parent()) {
+            markParentsAsModified(tree, node.parent());
+        } <span class="hljs-keyword">else</span> {
+            tree.modified = <span class="hljs-literal">true</span>;
+        }
+        <span class="hljs-keyword">return</span> node;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">markChildrenAsModified</span><span class="hljs-params">(tree, node)</span> {</span>
+        node.modified = <span class="hljs-literal">true</span>;
+        _.each(node.children(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span>{</span> markChildrenAsModified(tree, c); });
+        <span class="hljs-keyword">return</span> node;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clearModified</span><span class="hljs-params">(tree)</span> {</span>
+        tree.modified = <span class="hljs-literal">false</span>;
+        tree.walk(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(node)</span> {</span>
+            node.modified = <span class="hljs-literal">false</span>;
+        });
+    }
+
+    callbacks = {
+        <span class="hljs-string">'beforeFreeze'</span>: [clearModified],
+        <span class="hljs-string">'beforeFreeze.data'</span>: [markParentsAsModified],
+        <span class="hljs-string">'beforeFreeze.parseAndAddChild'</span>: [markChildrenAsModified, markParentsAsModified],
+        <span class="hljs-string">'beforeFreeze.addChildNode'</span>: [markChildrenAsModified, markParentsAsModified],
+        <span class="hljs-string">'beforeFreeze.remove'</span>: [markParentsAsModified]
     };
 
 
