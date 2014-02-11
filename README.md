@@ -1,3 +1,5 @@
+<img src="https://raw.github.com/drfloob/chinchilla/master/res/red.svg" align="right" width="300px" />
+
 An immutable "hash tree", or hierarchical dictionary. Generally
 useful, intended to integrate with [facebook/react][react] (TBD).  See
 [drfloob/_tree][drf_tree] for backing implementation details and the
