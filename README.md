@@ -1,5 +1,12 @@
 <img src="https://raw.github.com/drfloob/chinchilla/master/res/red.png" align="right" width="300px" />
 
+# DEPRECATED
+
+[`_tree`][drf_tree] v0.6.0 has native modeling support via node and
+tree subclassing. Chinchilla isn't needed anymore.
+
+--------------------------------------------------------------------------------
+
 An immutable "hash tree", or hierarchical dictionary. Generally
 useful, intended to integrate with [facebook/react][react] (TBD).  See
 [drfloob/_tree][drf_tree] for backing implementation details and the
